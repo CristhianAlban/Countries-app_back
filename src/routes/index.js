@@ -12,9 +12,23 @@ const router = Router();
 
 // Configurar los routers
 // Ejemplo: router.use('/auth', authRouter);
-router.get('/', (req, res)=>{
-    console.log("estoy funcionando home");
-    res.send("esto es una ruta home")
+router.get('/', async(req, res)=>{
+    try{
+    const response = await axios.get('https://restcountries.com/v3/all')
+    await Promise.all(mapApiToDb(response))    
+    let countries = await Country.findAll({
+        attributes: ['flag', 'continent', 'name', 'population', 'id'],
+        include:Activity
+    })
+    let responseToSend;
+    countries.length? responseToSend= "Base de datos cargada" : responseToSend = "La API respondio pero no se cargó la base de datos";
+    console.log(responseToSend)
+    res.send(responseToSend)    
+}catch(error){
+    // handle error
+    console.log(error);
+    res.send("Hubo un error, la API no responde y no se actualizo la base de datos")
+}    
 })
 router.get('/countries/:idCountry', async(req, res)=>{
     try{  
@@ -30,8 +44,8 @@ router.get('/countries/:idCountry', async(req, res)=>{
 })
 router.get('/countries', async(req, res)=>{
     try{
-        const response = await axios.get('https://restcountries.com/v3/all')
-        await Promise.all(mapApiToDb(response))
+        // const response = await axios.get('https://restcountries.com/v3/all')
+        // await Promise.all(mapApiToDb(response))
         if(req.query.name){
             let responseFilter= await findQuery(req.query.name);
             if(responseFilter.length){

@@ -18,15 +18,7 @@ const mapApiToDb = (response)=>{
     })
 }
 const findQuery= async (name)=>{
-    try{  
-        // let countryName=name.toLowerCase().split('');
-        // countryName[0]=countryName[0].toUpperCase();
-        // countryName=countryName.join('');        
-        // let response= await Country.findAll();
-        // return response.filter(e=>{
-        //     return e.name.includes(countryName)
-        // })  
-        
+    try{
         let countryName=name.toLowerCase().split('');
         countryName[0]=countryName[0].toUpperCase();
         countryName=countryName.join('');        
